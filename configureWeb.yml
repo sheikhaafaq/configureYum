@@ -1,0 +1,39 @@
+- hosts: all
+  tasks:
+     - file:
+          state: directory
+          path: "/dvd1"
+       
+     - mount: 
+          src: /dev/cdrom
+          path: "/dvd1"
+          state: mounted
+          fstype: "iso9660"
+     - yum_repository:
+          baseurl: "/dvd1/AppStream"
+          name: "Mydvd1"
+          description: "My yum dvd for package"
+          gpgcheck: no
+     - yum_repository:
+          baseurl: "/dvd1/BaseOS"
+          name: "Mydvd2"
+          description: "My yum dvd for package"
+          gpgcheck: no
+     - package: 
+          name: "httpd"
+          state: "present"
+
+     - copy:
+          dest: "/var/www/html/preq-web.html"
+          content: "Web server configure by ansible"
+     - service: 
+          name: httpd
+          state: started
+          enabled: yes
+     - firewalld: 
+          port: "80/tcp" 
+          state: enabled
+          permanent: yes
+          immediate: yes
+
+
